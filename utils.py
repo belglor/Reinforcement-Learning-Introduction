@@ -40,7 +40,7 @@ def reward_plotter(rewards, title, col, smooth_factor=0, include_sd=False):
     plt.legend()
 
 
-def run_loop(env, agent, title, max_e=None, render=False):
+def run_loop(env, agent, title, max_e=None, render=False, update=True):
     t = 0; i = 0; e = 0
     s, r, d, _ = env.reset()
     a_ = agent.action(s)
@@ -54,7 +54,8 @@ def run_loop(env, agent, title, max_e=None, render=False):
         s_, r, d, _ = env.step(a)
         a_ = agent.action(s_)
 
-        agent.update(s=s, a=a, r=r, s_=s_, a_=a_, d=d)
+        if update:
+            agent.update(s=s, a=a, r=r, s_=s_, a_=a_, d=d)
         r_sum += r
         s = np.copy(s_)
 
@@ -89,6 +90,7 @@ def run_loop(env, agent, title, max_e=None, render=False):
             rewards.append(r_sum)
             r_sum = 0; e += 1; i = 0
             s, r, d, _ = env.reset()
+            a_ = agent.action(s)
 
         if max_e and e >= max_e:
             break
