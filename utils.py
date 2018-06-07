@@ -7,13 +7,17 @@ from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 class RunningPlot():
+    def __init__(self, t=1e-6):
+        self.t = t
+
     def __enter__(self):
-        plt.clf()
+        # TODO: add a notebook check - clf vs clear_output
+        # plt.clf()
+        clear_output(True)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         plt.draw()
-        plt.pause(.1)
-        return 0
+        plt.pause(self.t)
 
 
 def colorbar(mappable):
@@ -40,7 +44,7 @@ def reward_plotter(rewards, title, col, smooth_factor=0, include_sd=False):
     plt.legend()
 
 
-def run_loop(env, agent, title, max_e=None, render=False, update=True):
+def run_loop(env, agent, title, max_e=None, render=False, update=True, plot_frequency=5e3):
     t = 0; i = 0; e = 0
     s, r, d, _ = env.reset()
     a_ = agent.action(s)
@@ -60,18 +64,18 @@ def run_loop(env, agent, title, max_e=None, render=False, update=True):
         s = np.copy(s_)
 
         if render:
-            with RunningPlot():
+            with RunningPlot(0.1):
                 plt.figure(1, figsize=(4, 4))
                 plt.imshow(env.render())
                 plt.title(title + ', step: {}'.format(i))
-                clear_output(True)
+
 
         if d or i > 1e6:
-            if since_last_plot > 1e4:
+            if since_last_plot > plot_frequency:
                 with RunningPlot():
                     since_last_plot = 0
                     plt.figure(2, figsize=(8, 4))
-                    plt.suptitle(title, x=0.1, y=1, fontsize=20, horizontalalignment='left')
+                    plt.suptitle(title + ', episode: '+str(e), x=0.1, y=1, fontsize=20, horizontalalignment='left')
 
                     plt.subplot(121)
                     plt.title('Highest action value')
@@ -84,7 +88,6 @@ def run_loop(env, agent, title, max_e=None, render=False, update=True):
                     img2 = plt.imshow(env.heat_map)
                     plt.axis('equal')
                     colorbar(img2)
-                    clear_output(wait=True)
 
             ep_lens.append(i)
             rewards.append(r_sum)
