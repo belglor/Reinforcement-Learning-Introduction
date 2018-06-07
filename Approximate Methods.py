@@ -37,8 +37,6 @@ import utils
 from tileEncoder import TileEncoder
 from agents import ApproximateNStepSARSA
 
-get_ipython().run_line_magic('matplotlib', 'inline')
-
 
 # In[3]:
 
