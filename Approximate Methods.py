@@ -82,7 +82,7 @@ def run_loop(env, agent, title, max_e=None):
 
 
 num_runs = 1
-eps_per_run = 1000
+eps_per_run = 1500
 n = 10
 
 
@@ -90,15 +90,18 @@ n = 10
 
 
 ApproxNSARSALearning_rewards = []
+ApproxNSARSALearning_eplen = []
 nbins = 8
 ntiles = 8
 env = TileEncoder(gym.make('MountainCar-v0'),nbins=nbins,ntiles=ntiles)
 for i in range(num_runs):
     NSARSA_Learning = ApproximateNStepSARSA(env.obspace_shape(), env.nactions(), n=n)
-    _, rewards = run_loop(env, NSARSA_Learning, 'NSARSALearning, n='+str(n), max_e=eps_per_run)
+    ep_lens, rewards = run_loop(env, NSARSA_Learning, 'NSARSALearning, n='+str(n), max_e=eps_per_run)
     ApproxNSARSALearning_rewards.append(rewards)
+    ApproxNSARSALearning_eplen.append(ep_lens)
 
 ApproxNSARSALearning_rewards  = np.array(ApproxNSARSALearning_rewards)
+ApproxNSARSALearning_eplen = np.array(ApproxNSARSALearning_eplen)
 env.close()
 
 # In[6]:
