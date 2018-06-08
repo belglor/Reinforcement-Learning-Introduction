@@ -3,6 +3,7 @@ import numpy as np
 
 class TileEncoder():
     def __init__(self, env, nbins=None, ntiles=None, l_bound=None, h_bound=None):        
+        env.reset()
         self.env = env
         
         if(nbins==None or ntiles==None):
@@ -18,11 +19,13 @@ class TileEncoder():
         if(h_bound == None):
             self.h_bound = env.observation_space.high
         if( any(i > inf_check for i in self.h_bound) ): #if obs space bounded to infinity, not tileable!
+            print("Environment unbounded! Cannot tile code")
             raise Exception
                 
         if(l_bound == None):
             self.l_bound = env.observation_space.low
         if( any(i < -inf_check for i in self.l_bound) ): #if obs space bounded to infinity, not tileable!
+            print("Environment unbounded! Cannot tile code")
             raise Exception
             
         # Create grid-tiling through linspace

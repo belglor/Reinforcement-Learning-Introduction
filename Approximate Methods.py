@@ -80,7 +80,7 @@ def run_loop(env, agent, title, max_e=None):
 
 
 num_runs = 1
-eps_per_run = 1500
+eps_per_run = 100
 n = 10
 
 
