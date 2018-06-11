@@ -33,3 +33,4 @@ def reward_plotter(rewards, title, col, smooth_factor=2, include_sd=False):
         plt.plot(means + sds, col, alpha=0.1)
         plt.plot(means - sds, col, alpha=0.1)
     plt.legend()
+    
