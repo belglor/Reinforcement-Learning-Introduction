@@ -3,7 +3,6 @@ import numpy as np
 
 class TileEncoder():
     def __init__(self, env, nbins=None, ntiles=None, l_bound=None, h_bound=None):        
-        env.reset()
         self.env = env
         
         if(nbins==None or ntiles==None):
