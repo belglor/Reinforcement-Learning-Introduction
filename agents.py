@@ -14,7 +14,7 @@ class TabularNStepQLearning:
         self.min_eps = 0.1
         self.decay_len = 1 # 1e4
         self.alpha = 0.1 / n
-        self.gamma = 1
+        self.gamma = 0.99
         self.t = 0
         self.exp = []
         self.Qtable = np.zeros(self.tab_shape)
