@@ -1,10 +1,10 @@
 import numpy as np
 import scipy.ndimage
 
-from IPython.display import clear_output
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
+from IPython.display import clear_output
 
 class RunningPlot():
     def __enter__(self):
