@@ -240,6 +240,9 @@ class TrueOnlineLambdaSARSA:
     def update(self, s, a, r, s_, a_, d, **kwargs):
         self.exp.append([s, a, r, s_, a_])
         
+        if d:
+            s = np.zeros_like(s)
+            
         Q = self.linapprox(s,a)
         Q_prime = self.linapprox(s_,a_)
         
