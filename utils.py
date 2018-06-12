@@ -32,12 +32,18 @@ def colorbar(mappable):
 def reward_plotter(rewards, title, col, smooth_factor=0, include_sd=False):
     means = np.mean(rewards, 0)
     if smooth_factor >= 0:
-        means = scipy.ndimage.filters.gaussian_filter1d(means, smooth_factor)
+        try:
+            means = scipy.ndimage.filters.gaussian_filter1d(means, smooth_factor)
+        except ZeroDivisionError:
+            pass
     plt.plot(means, col, label=title, alpha=0.75)
     if include_sd:
         sds = np.std(rewards, 0)
         if smooth_factor >= 0:
-            sds = scipy.ndimage.filters.gaussian_filter1d(sds, smooth_factor)
+            try:
+                sds = scipy.ndimage.filters.gaussian_filter1d(sds, smooth_factor)
+            except ZeroDivisionError:
+                pass
         plt.plot(means + sds, col, alpha=0.1)
         plt.plot(means - sds, col, alpha=0.1)
     plt.xlabel('Episodes')
