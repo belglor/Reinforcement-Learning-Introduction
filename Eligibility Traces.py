@@ -80,9 +80,9 @@ def etrace_run_loop(env, agent, title, max_e=None):
 # In[4]:
 
 
-num_runs = 1
+num_runs = 5
 eps_per_run = 1000
-n = 10
+n = 8
 
 
 # In[5]:
