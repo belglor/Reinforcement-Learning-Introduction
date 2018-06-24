@@ -5,6 +5,19 @@ from __future__ import print_function
 import numpy as np
 
 
+class RandomAgent:
+    def __init__(self, num_actions, *args, **kwargs):
+        self.num_actions = num_actions
+
+    def action(self, *args, **kwargs):
+        return np.random.randint(self.num_actions)
+
+    def update(self, *args, **kwargs):
+        pass
+
+    def linapprox(self, *args, **kwargs):
+        return np.zeros(self.num_actions)
+
 class TabularNStepQLearning:
     def __init__(self, state_shape, num_actions, n=1):
         self.num_actions = num_actions
@@ -13,7 +26,7 @@ class TabularNStepQLearning:
 
         self.min_eps = 0.1
         self.decay_len = 1 # 1e4
-        self.alpha = 0.1 / n
+        self.alpha = 0.1 
         self.gamma = 0.99
         self.t = 0
         self.exp = []
@@ -93,7 +106,6 @@ class TabularNStepSARSA(TabularNStepQLearning):
             self.Qtable[tuple(np.hstack([fs, fa]))] = Q_fas + self.alpha * (G - Q_fas)
 
 
-# Linear n-step SARSA
 class ApproximateNStepSARSA:
     def __init__(self, state_shape, num_actions, n=1):
         self.num_actions = num_actions
@@ -101,9 +113,9 @@ class ApproximateNStepSARSA:
         self.n = n
 
         self.min_eps = 0.1
-        self.decay_len = 1 # 1e4
-        self.alpha = 0.1 / n
-        self.gamma = 1
+        self.decay_len = 1  # 1e4
+        self.alpha = 0.05 / n  # TODO: probably reduce
+        self.gamma = 0.99
         self.t = 0
         self.exp = []
 
@@ -114,7 +126,7 @@ class ApproximateNStepSARSA:
     
     def linapprox(self, s, a=None):
         qsa = self.w.T.dot(s)
-        if(not a==None):
+        if a is not None:
             qsa = qsa[a]
         return qsa
 
