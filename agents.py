@@ -98,6 +98,7 @@ class ApproximateNStepSARSA:
     def __init__(self, state_shape, num_actions, n=1):
         self.num_actions = num_actions
         self.w = np.zeros(np.hstack([np.prod(state_shape), num_actions]))
+        #self.w = np.zeros(4096)
         self.n = n
 
         self.min_eps = 0.1

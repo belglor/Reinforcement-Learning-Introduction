@@ -35,6 +35,7 @@ import gym
 
 import utils
 from tileEncoder import TileEncoder
+#from tileEncoder_Sutton import TileEncoder
 from agents import ApproximateNStepSARSA
 
 
@@ -80,7 +81,7 @@ def run_loop(env, agent, title, max_e=None):
 
 
 num_runs = 1
-eps_per_run = 100
+eps_per_run = 1000
 n = 10
 
 

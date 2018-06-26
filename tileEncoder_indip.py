@@ -7,11 +7,12 @@ class TileEncoder():
         
         if(nbins==None or ntiles==None):
             raise Exception
-        self.nbins = nbins
+        self.nbins  = nbins
         self.ntiles = ntiles
         
-        self.shapevec = nbins * np.ones(len(env.env.state))
-        self.shapevec = np.append(self.shapevec,ntiles).astype(int)
+        self.shapevec   = nbins * np.ones(len(env.env.state))
+        self.shapetiles = ntiles * np.ones(len(env.env.state))
+        self.shapevec   = np.append(self.shapevec,self.shapetiles).astype(int)
         
         inf_check = 100 #threshold for infinity-bounded obs_space 
         #No bounds specified -> use the one given by env
@@ -40,25 +41,16 @@ class TileEncoder():
         shift_upbound = np.asarray(self.h_bound) - np.asarray(self.l_bound)
         div = shift_upbound / (self.nbins-1)
         
-        for i in range(self.ntiles):
-            offset = ( div / self.ntiles ) * i
-# =============================================================================
-#             #UNCOMMENT FOR ASYMMETRICAL UPDATES
-#             asymm_s = [shift_s[0] + offset[0], shift_s[1] + offset[1]*3] #Asymmetrical offset
-#             op = (asymm_s) / div
-#             idx = np.floor(op).astype(int)
-#             if (idx[0]>7):
-#                 idx[0] = 7
-#             if (idx[1]>7):
-#                 idx[1] = 7
-# =============================================================================
-                
-# =============================================================================
-            #UNCOMMENT FOR UNIFORM UPDATES
-            op = (shift_s + offset) / div
-            idx = np.floor(op).astype(int)
-            x[idx[0],idx[1],i] = 1
-# =============================================================================
+        #TODO: the current coding only support two-dimensional state-spaces
+        for i in range(self.ntiles):        #loop on the x direction          
+            offset_x = (( div / self.ntiles ) * i)[0]
+            op = (shift_s[0] + offset_x) / div[0]
+            idx_x = np.floor(op).astype(int)
+            for j in range(self.ntiles):    #loop in the y direction
+                offset_y = (( div / self.ntiles ) * j)[1]
+                op = (shift_s[1] + offset_y) / div[1]
+                idx_y = np.floor(op).astype(int)
+                x[idx_x,idx_y,i,j] = 1
             
         return x.flatten()
     
