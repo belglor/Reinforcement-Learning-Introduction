@@ -125,13 +125,15 @@ def costToGo(res, env, agent):
 
 def approx_run_loop(env, agent, title, max_e=None, render=False,):
     t = 0; i = 0; e = 0
-    s, r, d, _ = env.reset()
+    s, r, d, _ = env.reset()   
     a_ = agent.action(s)
     ep_lens = []; rewards = []
     r_sum = 0
     since_last_plot = 0
 
     while True:
+        if d: #NOTE: resetting here should cause no issues
+            s, r, d, _ = env.reset()
         i += 1; t += 1; since_last_plot += 1
         a = a_
         s_, r, d, _ = env.step(a)
@@ -155,7 +157,10 @@ def approx_run_loop(env, agent, title, max_e=None, render=False,):
             ep_lens.append(i)
             rewards.append(r_sum)
             r_sum = 0; e += 1; i = 0
-            s, r, d, _ = env.reset()
+            #s, r, d, _ = env.reset() 
+            #NOTE: resetting here cancels the info of the last state visited after termination
+            #Might be SOMEHOW detrimental. Better 
+                        
 
         if max_e and e >= max_e:
             break
