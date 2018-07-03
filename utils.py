@@ -29,7 +29,7 @@ def colorbar(mappable):
     return fig.colorbar(mappable, cax=cax)
 
 
-def reward_plotter(rewards, title, col, smooth_factor=0, include_sd=False):
+def reward_plotter(rewards, title, col='b', smooth_factor=0, include_sd=False):
     means = np.mean(rewards, 0)
     if smooth_factor >= 0:
         try:
@@ -75,7 +75,6 @@ def run_loop(env, agent, title, max_e=None, render=False, update=True, plot_freq
                 plt.figure(1, figsize=(4, 4))
                 plt.imshow(env.render())
                 plt.title(title + ', step: {}'.format(i))
-
 
         if d or i > 1e6:
             if since_last_plot > plot_frequency:
@@ -124,39 +123,38 @@ def costToGo(res, env, agent):
     return costToGo
 
 
-def approx_run_loop(env, agent, title, max_e=None):
-    t = 0; i = 0; e = 0
+def approx_run_loop(env, agent, title, max_e=None, render=False,):
+    ep_lens = []; rewards = []
+
+    i = 0; e = 0; r_sum = 0
     s, r, d, _ = env.reset()
     a_ = agent.action(s)
-    ep_lens = []; rewards = []
-    r_sum = 0
-    since_last_plot = 0
-
     while True:
-        i += 1; t += 1; since_last_plot += 1
-        a = a_
-        s_, r, d, _ = env.step(a)
+        i += 1
+        s_, r, d, _ = env.step(a_)
+        r_sum += r
+        a = np.copy(a_)
         a_ = agent.action(s_)
 
         agent.update(s=s, a=a, r=r, s_=s_, a_=a_, d=d)
-        r_sum += r
         s = np.copy(s_)
 
-        if (e + 1) % 100 == 0:
+        if render and (e + 1) % 500 == 0:
             env.render()
 
         if d:
             if (e + 1) % 100 == 0:
                 with RunningPlot():
                     plt.figure(1, figsize=(4, 4))
-                    plt.imshow(costToGo(128, env, agent))
-                    plt.title(title + ', episode: {}'.format(e) + ', step: {}'.format(i))
-                    plt.colorbar()
+                    img = plt.imshow(costToGo(128, env, agent))
+                    plt.title(title + ', episode: {}'.format(e))
+                    colorbar(img)
 
             ep_lens.append(i)
             rewards.append(r_sum)
-            r_sum = 0; e += 1; i = 0
+            i = 0; e += 1; r_sum = 0
             s, r, d, _ = env.reset()
+            a_ = agent.action(s)
 
         if max_e and e >= max_e:
             break
