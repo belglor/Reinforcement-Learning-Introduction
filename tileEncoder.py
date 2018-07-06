@@ -52,7 +52,7 @@ class TileEncoder():
              offset  = ( div / self.ntiles ) * i
              offset_x = 1*offset[0]
              offset_y = 3*offset[1]
-             asymmetric_s = [shift_s[0] + offset_x, shift_s[1] + offset_y]
+             asymmetric_s = [shift_s[0] - offset_x, shift_s[1] - offset_y]
              op = (asymmetric_s) / div
              idx = np.floor(op).astype(int)
              for j in range(len(idx)):
@@ -88,13 +88,43 @@ class TileEncoder():
     def close(self):        
         return self.env.close()
     
-    def visualize_encoded(self, state, encode=True):
+    def as_tiling(self, state, encode=True):
         x = state
         if encode:
             x = self.encode(state,False)
         else:
             x = np.reshape(x,[self.nbins, self.nbins, self.ntiles])
             
-        x = np.sum(x,axis=2)
+#        x = np.sum(x,axis=2)
+#        plt.figure()
+#        plt.imshow(x)
+            
+        tiled_rep = np.zeros([self.nbins*self.ntiles, self.nbins*self.ntiles, self.ntiles])
+        for i in range(self.ntiles): #loop through tiling
+            tile = x[:,:,i]
+            idx = np.nonzero(tile)
+            idx_x, idx_y = idx[0][0]*self.nbins, idx[1][0]*self.nbins
+            start_x, end_x = idx_x+i, idx_x+self.ntiles+i
+            # WITH UNIFORM OFFSET:
+            #start_y, end_y = idx_y+i, idx_y+self.ntiles+i
+            # WITH ASYMMETRICAL OFFSET: 
+            start_y, end_y = idx_y+3*i, idx_y+self.ntiles+3*i
+            
+            if(start_x>=self.ntiles*self.nbins):
+                start_x, end_x = self.ntiles-1, self.ntiles-1
+            elif(end_x>=self.ntiles*self.nbins):
+                end_x = self.ntiles-1
+            elif(start_x>=self.ntiles*self.nbins):
+                start_y, end_y = self.ntiles-1, self.ntiles-1
+            elif(end_y>=self.ntiles*self.nbins):
+                end_y = self.ntiles-1
+                
+            tiled_rep[start_x:end_x,start_y:end_y,i] = 1
+            
+        return tiled_rep
+    
+    def visualize_tiling(self, state, to_encode):
+        tiling = self.as_tiling(state, to_encode)
+        tiles = np.sum(tiling, axis=2)
         plt.figure()
-        plt.imshow(x)
+        plt.imshow(tiles)
