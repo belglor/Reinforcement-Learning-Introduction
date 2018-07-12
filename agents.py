@@ -114,8 +114,7 @@ class ApproximateNStepSARSA:
 
         self.min_eps = 0.1
         self.decay_len = 1  # 1e4
-        self.alpha = 0.01 / n  # TODO: probably reduce
-        # alpha 0.01 seem to work for n=8 and n=1, not n=20. 
+        self.alpha = 0.01 / n  # alpha 0.01 seem to work for n=8 and n=1, not n=20.
         self.gamma = 0.99
         self.t = 0
         self.exp = []
@@ -181,12 +180,12 @@ class TrueOnlineLambdaSARSA:
 
         self.min_eps = 0.1
         self.decay_len = 1 # 1e4
-        self.alpha = 0.1 / n
+        self.alpha = 0.05
         self.gamma = 1
-        
+
         self.lambd = 0
-        self.Q_old = 0 
-        
+        self.Q_old = 0
+
         self.t = 0
         self.exp = []
         #TODO x(terminal,a) = 0, so make sure that's the case

@@ -130,16 +130,16 @@ def approx_run_loop(env, agent, title, max_e=None, render=False,):
     s, r, d, _ = env.reset()
     a_ = agent.action(s)
     while True:
+        i += 1
         s_, r, d, _ = env.step(a_)
         r_sum += r
         a = np.copy(a_)
-        i += 1; t += 1; since_last_plot += 1
         a_ = agent.action(s_)
 
         agent.update(s=s, a=a, r=r, s_=s_, a_=a_, d=d)
         s = np.copy(s_)
 
-        if render and (e + 1) % 500 == 0:
+        if render and (e + 1) % 100 == 0:
             env.render()
 
         if d:
