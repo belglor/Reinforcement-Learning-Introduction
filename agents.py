@@ -113,8 +113,9 @@ class ApproximateNStepSARSA:
         self.n = n
 
         self.min_eps = 0.1
-        self.decay_len = 1
-        self.alpha = 0.05 / n
+        self.decay_len = 1  # 1e4
+        self.alpha = 0.01 / n  # TODO: probably reduce
+        # alpha 0.01 seem to work for n=8 and n=1, not n=20. 
         self.gamma = 0.99
         self.t = 0
         self.exp = []
@@ -126,6 +127,7 @@ class ApproximateNStepSARSA:
     
     def linapprox(self, s, a=None):
         qsa = self.w.T.dot(s)
+        
         if a is not None:
             qsa = qsa[a]
         return qsa
