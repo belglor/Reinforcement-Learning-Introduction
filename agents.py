@@ -113,8 +113,8 @@ class ApproximateNStepSARSA:
         self.n = n
 
         self.min_eps = 0.1
-        self.decay_len = 1  # 1e4
-        self.alpha = 0.05 / n  # TODO: probably reduce
+        self.decay_len = 1
+        self.alpha = 0.05 / n
         self.gamma = 0.99
         self.t = 0
         self.exp = []
@@ -167,44 +167,15 @@ class ApproximateNStepSARSA:
             self.exp.pop(0)
 
             qsa = self.linapprox(fs,fa)
-            self.w[:,fa] += self.alpha * (G - qsa) * fs 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            self.w[:,fa] += self.alpha * (G - qsa) * fs
 
 
 # True SARSA
 class TrueOnlineLambdaSARSA:
-    def __init__(self, state_shape, num_actions, n=1):
+    def __init__(self, state_shape, num_actions):
         self.num_actions = num_actions
         self.w = np.zeros(np.hstack([np.prod(state_shape), num_actions]))
         self.z = np.zeros(self.w.shape)
-        self.n = n
 
         self.min_eps = 0.1
         self.decay_len = 1 # 1e4
