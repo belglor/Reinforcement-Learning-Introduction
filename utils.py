@@ -149,6 +149,7 @@ def approx_run_loop(env, agent, title, max_e=None, render=False,):
                     img = plt.imshow(costToGo(128, env, agent))
                     plt.title(title + ', episode: {}'.format(e))
                     colorbar(img)
+                    #env.visualize_tiling(s,False)
 
             ep_lens.append(i)
             rewards.append(r_sum)
