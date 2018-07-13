@@ -94,7 +94,7 @@ class TabularNStepSARSA(TabularNStepQLearning):
                 Q_fas = self.Qtable[tuple(np.hstack([fs, fa]))]
                 self.Qtable[tuple(np.hstack([fs, fa]))] = Q_fas + self.alpha * (G - Q_fas)
             
-        elif len(self.exp) <= self.n:  # to early -- move along
+        elif len(self.exp) < self.n:  # to early -- move along
             pass
         else:  # Normal n-step update w. bootstrapping
             fs, fa, fr, fs_, fa_ = self.exp[0]
@@ -107,14 +107,14 @@ class TabularNStepSARSA(TabularNStepQLearning):
 
 
 class ApproximateNStepSARSA:
-    def __init__(self, state_shape, num_actions, n=1):
+    def __init__(self, state_shape, num_actions, n=1, alpha=0.01):
         self.num_actions = num_actions
         self.w = np.zeros(np.hstack([np.prod(state_shape), num_actions]))
         self.n = n
 
         self.min_eps = 0.1
         self.decay_len = 1  # 1e4
-        self.alpha = 0.01 / n  # alpha 0.01 seem to work for n=8 and n=1, not n=20.
+        self.alpha = alpha / n  # alpha 0.01 seem to work for n=8 and n=1, not n=20.
         self.gamma = 0.99
         self.t = 0
         self.exp = []
@@ -158,7 +158,7 @@ class ApproximateNStepSARSA:
                 qsa = self.linapprox(fs,fa)
                 self.w[:,fa] += self.alpha * (G - qsa) * fs 
                 
-        elif len(self.exp) <= self.n:  # to early -- move along
+        elif len(self.exp) < self.n:  # to early -- move along
             pass
         else:  # Normal n-step update w. bootstrapping
             fs, fa, fr, fs_, fa_ = self.exp[0]
