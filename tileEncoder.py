@@ -12,7 +12,7 @@ class TileEncoder():
         self.nbins = nbins
         self.ntiles = ntiles
         
-        self.shapevec = nbins * np.ones(len(env.env.state))
+        self.shapevec = nbins * np.ones(len(env.reset()))
         self.shapevec = np.append(self.shapevec,ntiles).astype(int)
         
         inf_check = 100 #threshold for infinity-bounded obs_space 
